@@ -1,7 +1,6 @@
 datasource db {
   provider = "postgresql" // or "mysql", "sqlite", "sqlserver" depending on your database
   url      = env("DATABASE_URL")
-  relationMode = "prisma"
 }
 
 generator client {
