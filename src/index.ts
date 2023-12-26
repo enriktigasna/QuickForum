@@ -1,9 +1,12 @@
 import express, { Request, Response } from 'express';
 import { PrismaClient } from "@prisma/client";
-import { getUser, getUsers } from './controllers/users.controller';
+import { getMe, getUser, getUsers, loginUser, registerUser, validateUser } from './controllers/users.controller';
+import { getThread, getThreads } from './controllers/threads.controller';
 
 const app = express();
 const port = 3000;
+
+app.use(express.json());
 
 const prisma = new PrismaClient();
 
@@ -18,45 +21,38 @@ BigInt.prototype.toJSON = function() {
 };
 
 
-// Gets all users
+// Gets many users
+// Takes limit and page as query parameters
 app.get('/users', getUsers);
 
+// Get me
+app.get('/users/me', getMe);
+
+// Registers a new user
+// Takes email, username, and password as body parameters
+app.post ('/users/register', registerUser);
+
+// Logs in a user
+// Takes login (username/mail) and password as body parameters
+app.post('/users/login', loginUser);
+
+// Validate user token
+// Takes token as body parameter
+// Returns user ID
+app.post('/users/validate', validateUser);
+
 // Gets user by ID
+// KEEP IN MIND TO HAVE DYNAMIC ROUTES AT THE BOTTOM
 app.get('/users/:id', getUser);
 
-app.get('/threads', (req: Request, res: Response) => {
-    const { page, limit } = req.query;
+// Gets many threads
+// Takes limit and page as query parameters
+app.get('/threads', getThreads);
 
-    if (Number(limit) > 50) {
-        res.json({ error: 'Limit cannot be greater than 50' });
-    }
+// Gets thread by ID
+app.get('/threads/:id', getThread);
 
-    const pageNumber = Number(page) || 1;
-    const limitNumber = Number(limit) || 10;
-    const offset = (pageNumber - 1) * limitNumber;
 
-    prisma.thread.findMany({
-        skip: offset,
-        take: limitNumber,
-    }).then((threads) => {
-        res.json(threads);
-    }).catch((error) => {
-        res.json(error);
-    });
-});
-
-app.get('/threads/:id', (req: Request, res: Response) => {
-    const id = Number(req.params.id);
-    prisma.thread.findUnique({
-        where: {
-            threadId: id
-        }
-    }).then((thread) => {
-        res.json(thread);
-    }).catch((error) => {
-        res.json(error);
-    });
-});
 
 app.listen(port, () => {
     console.log(`Server is listening on port ${port}`);

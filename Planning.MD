@@ -4,7 +4,14 @@
 -- 4. Implement Authentication --
 -- 5. Implement read api routes --
 
-4. Implement clear file structure with model and controller
+4. Implement clear code structure with model, controller and validator
+
+TODO: 
+Implement authentication correctly with refresh tokens and set bearer token
+
+Long term code quality TODO:
+TODO: Improve error handling on API, don't just return prisma errors, return correct errors
+TODO: Add generic errors, while correctly logging them
 
 6. Implement create/edit/delete
 7. Refactor, improve
