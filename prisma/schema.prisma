@@ -1,0 +1,82 @@
+datasource db {
+  provider = "postgresql" // or "mysql", "sqlite", "sqlserver" depending on your database
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  userId           BigInt             @id @default(autoincrement())
+  username         String?            @unique
+  email            String             @unique
+  passwordHash     String
+  registrationDate DateTime
+  lastLoginDate    DateTime
+  bio              String?
+  isAdmin          Boolean
+  threads          Thread[]
+  posts            Post[]
+  replies          Reply[]
+  refreshTokens    RefreshToken[]
+  blacklistedTokens BlacklistedToken[]
+}
+
+model Thread {
+  threadId       BigInt       @id @default(autoincrement())
+  categoryId     BigInt
+  userId         BigInt
+  title          String
+  creationDate   DateTime
+  isPinned       Boolean
+  category       Category     @relation(fields: [categoryId], references: [categoryId])
+  user           User         @relation(fields: [userId], references: [userId])
+  posts          Post[]
+}
+
+model Category {
+  categoryId    BigInt   @id @default(autoincrement())
+  categoryName  String   @unique
+  description   String
+  threads       Thread[]
+}
+
+model Post {
+  postId       BigInt   @id @default(autoincrement())
+  threadId     BigInt
+  userId       BigInt
+  content      String
+  postDate     DateTime
+  thread       Thread   @relation(fields: [threadId], references: [threadId])
+  user         User     @relation(fields: [userId], references: [userId])
+  replies      Reply[]
+}
+
+model Reply {
+  replyId       BigInt   @id @default(autoincrement())
+  postId        BigInt
+  userId        BigInt
+  content       String
+  replyDate     DateTime
+  post          Post     @relation(fields: [postId], references: [postId])
+  user          User     @relation(fields: [userId], references: [userId])
+}
+
+model RefreshToken {
+  refreshTokenId BigInt   @id @default(autoincrement())
+  userId         BigInt
+  refreshToken   String   @unique
+  creationDate   DateTime
+  expirationDate DateTime
+  isRevoked      Boolean
+  user           User     @relation(fields: [userId], references: [userId])
+}
+
+model BlacklistedToken {
+  tokenId        BigInt   @id @default(autoincrement())
+  token          String   @unique
+  userId         BigInt
+  blacklistDate  DateTime
+  user           User     @relation(fields: [userId], references: [userId])
+}
