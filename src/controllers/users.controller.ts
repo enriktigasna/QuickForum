@@ -97,11 +97,6 @@ const getMe = async (req: Request, res: Response) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 };
-    
-
-// PAST THIS EVERYTHING NEEDS REFACTORING!
-// PAST THIS EVERYTHING NEEDS REFACTORING!
-// PAST THIS EVERYTHING NEEDS REFACTORING!
 
 // Authentication portion
 
@@ -160,6 +155,46 @@ const validateUser = async (req: Request, res: Response) => {
     }
 }
 
+// User resources
+
+const getUserThreads = async (req: Request, res: Response) => {
+    const id = Number(req.params.id);
+    prisma.thread.findMany({
+        where: {
+            userId: id
+        }
+    }).then((threads) => {
+        res.json(threads);
+    }).catch((error) => {
+        res.json(error);
+    });
+}
+
+const getUserPosts = async (req: Request, res: Response) => {
+    const id = Number(req.params.id);
+    prisma.post.findMany({
+        where: {
+            userId: id
+        }
+    }).then((posts) => {
+        res.json(posts);
+    }).catch((error) => {
+        res.json(error);
+    });
+}
+
+const getUserReplies = async (req: Request, res: Response) => {
+    const id = Number(req.params.id);
+    prisma.reply.findMany({
+        where: {
+            userId: id
+        }
+    }).then((replies) => {
+        res.json(replies);
+    }).catch((error) => {
+        res.json(error);
+    });
+}
 
 export {
     registerUser,
@@ -167,5 +202,8 @@ export {
     validateUser,
     getUser,
     getUsers,
-    getMe
+    getMe,
+    getUserThreads,
+    getUserPosts,
+    getUserReplies,
 }

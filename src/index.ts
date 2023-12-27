@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import { PrismaClient } from "@prisma/client";
-import { getMe, getUser, getUsers, loginUser, registerUser, validateUser } from './controllers/users.controller';
-import { getThread, getThreads } from './controllers/threads.controller';
+import { getMe, getUser, getUserPosts, getUserReplies, getUserThreads, getUsers, loginUser, registerUser, validateUser } from './controllers/users.controller';
+import { getThread, getThreadPosts, getThreads } from './controllers/threads.controller';
 
 const app = express();
 const port = 3000;
@@ -45,12 +45,20 @@ app.post('/users/validate', validateUser);
 // KEEP IN MIND TO HAVE DYNAMIC ROUTES AT THE BOTTOM
 app.get('/users/:id', getUser);
 
+// User Resources
+app.get('/users/:id/threads', getUserThreads);
+app.get('/users/:id/posts', getUserPosts);
+app.get('/users/:id/replies', getUserReplies);
+
 // Gets many threads
 // Takes limit and page as query parameters
 app.get('/threads', getThreads);
 
 // Gets thread by ID
 app.get('/threads/:id', getThread);
+
+// Get thread resources
+app.get('/threads/:id/posts', getThreadPosts);
 
 
 

@@ -37,7 +37,24 @@ const getThread = async (req: Request, res: Response) => {
     });
 }
 
+const getThreadPosts = async (req: Request, res: Response) => {
+    const id = Number(req.params.id);
+    prisma.thread.findUnique({
+        where: {
+            threadId: id
+        },
+        select: {
+            posts: true
+        }
+    }).then((thread) => {
+        res.json(thread);
+    }).catch((error) => {
+        res.json(error);
+    });
+}
+
 export {
     getThreads,
-    getThread
+    getThread,
+    getThreadPosts
 }
