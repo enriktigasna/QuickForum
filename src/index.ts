@@ -7,6 +7,7 @@ const app = express();
 const port = 3000;
 
 app.use(express.json());
+app.use(require("cookie-parser")());
 
 const prisma = new PrismaClient();
 
