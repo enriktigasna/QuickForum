@@ -12,8 +12,8 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
         algorithms: ["HS256"],
     })
         .then((payload: JWTVerifyResult) => {
-            const userID: number  = payload.payload.userID as number;
-            req.user = userID;
+            const userId: number = payload.payload.userID as number;
+            req.user = userId;
             next();
         })
         .catch((err) => {
