@@ -1,12 +1,14 @@
 import express from 'express';
 import { register, login, refreshAccessToken } from '../controllers/auth.controller';
-import { refreshValidation, registerValidation } from '../validation/auth.validation';
+import { loginValidation, refreshValidation, registerValidation } from '../validation/auth.validation';
 
 const router = express.Router();
 
 // VALIDATION
-router.post('/refresh', refreshValidation);
 router.post('/register', registerValidation);
+router.post('/login', loginValidation);
+router.post('/refresh', refreshValidation);
+
 
 // ROUTES
 router.post('/register', register)
