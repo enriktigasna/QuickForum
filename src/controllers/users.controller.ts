@@ -15,7 +15,6 @@ const getUser = async (req: Request, res: Response) => {
     },
     select: {
       userId: true,
-      email: true,
       username: true,
       registrationDate: true,
       lastLoginDate: true,
@@ -46,7 +45,6 @@ const getUsers = async (req: Request, res: Response) => {
       take: limitNumber,
       select: {
         userId: true,
-        email: true,
         username: true,
         registrationDate: true,
         lastLoginDate: true,
@@ -90,50 +88,53 @@ const getMe = async (req: Request, res: Response) => {
 
 const getUserThreads = async (req: Request, res: Response) => {
   const id = Number(req.params.id);
-  prisma.thread
-    .findMany({
-      where: {
-        userId: id,
-      },
-    })
-    .then((threads) => {
-      res.json(threads);
-    })
-    .catch((error) => {
-      res.json(error);
-    });
+  const user = await prisma.user.findUnique({
+    where: {
+      userId: BigInt(id),
+    },
+  });
+  if (!user) return res.status(404).json({ error: "User not found" });
+
+  const threads = await prisma.thread.findMany({
+    where: {
+      userId: BigInt(id),
+    },
+  });
+  res.json(threads);
 };
 
 const getUserPosts = async (req: Request, res: Response) => {
   const id = Number(req.params.id);
-  prisma.post
-    .findMany({
-      where: {
-        userId: id,
-      },
-    })
-    .then((posts) => {
-      res.json(posts);
-    })
-    .catch((error) => {
-      res.json(error);
-    });
+  const user = await prisma.user.findUnique({
+    where: {
+      userId: BigInt(id),
+    },
+  });
+  if (!user) return res.status(404).json({ error: "User not found" });
+
+  const posts = await prisma.post.findMany({
+    where: {
+      userId: BigInt(id),
+    },
+  });
+  res.json(posts);
 };
 
 const getUserReplies = async (req: Request, res: Response) => {
   const id = Number(req.params.id);
-  prisma.reply
-    .findMany({
-      where: {
-        userId: id,
-      },
-    })
-    .then((replies) => {
-      res.json(replies);
-    })
-    .catch((error) => {
-      res.json(error);
-    });
+  const user = await prisma.user.findUnique({
+    where: {
+      userId: BigInt(id),
+    },
+  });
+  if (!user) return res.status(404).json({ error: "User not found" });
+
+  const replies = await prisma.reply.findMany({
+    where: {
+      userId: BigInt(id),
+    },
+  });
+  res.json(replies);
 };
 
 export {

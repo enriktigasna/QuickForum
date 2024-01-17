@@ -41,13 +41,13 @@ const register = async (req: Request, res: Response) => {
       isAdmin: false,
     },
   });
-  const accessToken = await new SignJWT({ userID: user.userId })
+  const accessToken = await new SignJWT({ userId: user.userId })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime("2h")
     .sign(new TextEncoder().encode(SECRET));
 
-  const refreshToken = await new SignJWT({ userID: user.userId })
+  const refreshToken = await new SignJWT({ userId: user.userId })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime("7d")
@@ -117,14 +117,14 @@ const login = async (req: Request, res: Response) => {
     return;
   }
 
-  const accessToken = await new SignJWT({ userID: user[0].userId })
+  const accessToken = await new SignJWT({ userId: user[0].userId })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime("2h")
     .sign(new TextEncoder().encode(SECRET));
 
   // Create a refresh token
-  const refreshToken = await new SignJWT({ userID: user[0].userId })
+  const refreshToken = await new SignJWT({ userId: user[0].userId })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime("7d")
@@ -220,7 +220,7 @@ const refreshAccessToken = async (req: Request, res: Response) => {
   }
 
   // Generate a new access token
-  const accessToken = await new SignJWT({ userID: refreshTokenData.userId })
+  const accessToken = await new SignJWT({ userId: refreshTokenData.userId })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime("2h")

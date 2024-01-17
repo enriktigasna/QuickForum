@@ -12,7 +12,7 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
         algorithms: ["HS256"],
     })
         .then((payload: JWTVerifyResult) => {
-            const userId: number = payload.payload.userID as number;
+            const userId: number = payload.payload.userId as number;
             req.user = userId;
             next();
         })

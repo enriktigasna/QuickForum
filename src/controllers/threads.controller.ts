@@ -14,43 +14,45 @@ const getThreads = async (req: Request, res: Response) => {
     const limitNumber = Number(limit) || 10;
     const offset = (pageNumber - 1) * limitNumber;
 
-    prisma.thread.findMany({
+    const threads = await prisma.thread.findMany({
         skip: offset,
         take: limitNumber,
-    }).then((threads) => {
-        res.json(threads);
-    }).catch((error) => {
-        res.json(error);
-    });
+    })
+
+    res.json(threads);
 }
 
 const getThread = async (req: Request, res: Response) => {
     const id = Number(req.params.id);
-    prisma.thread.findUnique({
+    if(!id) return res.status(400).json({ error: 'No thread ID provided' });
+
+    const thread = await prisma.thread.findUnique({
         where: {
             threadId: id
         }
-    }).then((thread) => {
-        res.json(thread);
-    }).catch((error) => {
-        res.json(error);
-    });
+    })
+    if(!thread) return res.status(404).json({ error: 'Thread not found' });
+
+    res.json(thread);
 }
 
 const getThreadPosts = async (req: Request, res: Response) => {
     const id = Number(req.params.id);
-    prisma.thread.findUnique({
+    if(!id) return res.status(400).json({ error: 'No thread ID provided' });
+
+    const thread = await prisma.thread.findUnique({
         where: {
             threadId: id
-        },
-        select: {
-            posts: true
         }
-    }).then((thread) => {
-        res.json(thread);
-    }).catch((error) => {
-        res.json(error);
-    });
+    })
+    if(!thread) return res.status(404).json({ error: 'Thread not found' });
+
+    const posts = await prisma.post.findMany({
+        where: {
+            threadId: id
+        }
+    })
+    res.json(posts);
 }
 
 export {
