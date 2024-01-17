@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { jwtVerify } from "jose";
+import { JWTPayload, JWTVerifyResult, jwtVerify } from "jose";
 
 const verifyToken = (req: Request, res: Response, next: NextFunction) => {
     if (!req.cookies.accessToken) {
@@ -8,12 +8,17 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
     const accessToken = req.cookies.accessToken;
     const SECRET = process.env.JWT_SECRET;
 
-    jwtVerify(accessToken, new TextEncoder().encode(SECRET))
-        .then((payload) => {
-            req.user = payload;
+    jwtVerify(accessToken, new TextEncoder().encode(SECRET), {
+        algorithms: ["HS256"],
+    })
+        .then((payload: JWTVerifyResult) => {
+            const userID: number  = payload.payload.userID as number;
+            req.user = userID;
             next();
         })
         .catch((err) => {
             res.status(401).json({ message: "Invalid access token" });
         });
 }
+
+export default verifyToken;

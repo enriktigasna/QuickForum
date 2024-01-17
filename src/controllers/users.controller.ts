@@ -1,8 +1,6 @@
 import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt'
-import { authenticateUser } from '../auth/authenticate';
-import { validateToken } from '../auth/validate';
 
 const prisma = new PrismaClient();
 
@@ -48,7 +46,9 @@ const getUsers = async (req: Request, res: Response) => {
             lastLoginDate: true,
             isAdmin: true,
             bio: true,
-        },
+        }, orderBy: {
+            lastLoginDate: 'desc'
+        }
     }
     ).then((users) => {
         res.json(users);
@@ -58,102 +58,25 @@ const getUsers = async (req: Request, res: Response) => {
 }
 
 const getMe = async (req: Request, res: Response) => {
-    
-    const authHeader = req.headers.authorization;
+    const userId = req.user as number;
+    if (!userId) return res.status(401).json({ error: 'Unauthorized' });
 
-    if (!authHeader) {
-        return res.status(401).json({ error: 'No authorization header provided' });
-    }
-
-    const token = authHeader.split(' ')[1]; // Assumes a "Bearer [token]" format
-    if (!token) {
-        return res.status(401).json({ error: 'No token provided' });
-    }
-
-    try {
-        const userId = await validateToken(token);
-        if (!userId) {
-            return res.status(401).json({ error: 'Invalid token' });
-        }
-
-        const user = await prisma.user.findUnique({
-            where: { userId },
+    const user = await prisma.user.findUnique({
+        where: { userId },
             select: {
-                email: true,
-                username: true,
-                registrationDate: true,
-                lastLoginDate: true,
-                isAdmin: true,
-                bio: true,
-            },
-        });
-
-        if (!user) {
-            return res.status(404).json({ error: 'User not found' });
-        }
-
-        res.json(user);
-    } catch (error) {
-        res.status(500).json({ error: 'Internal server error' });
-    }
-};
-
-// Authentication portion
-
-const registerUser = async (req: Request, res: Response) => {
-    const { email, username, password } = req.body;
-
-    if (!email || !username || !password) {
-        return res.status(400).json({ error: 'Missing required fields' });
-    }
-    
-    const passwordHash = await bcrypt.hash(password, 10);
-
-    prisma.user.create({
-        data: {
-            email,
-            username,
-            passwordHash,
-            registrationDate: new Date(),
-            lastLoginDate: new Date(),
-            isAdmin: false,
+            email: true,
+            username: true,
+            registrationDate: true,
+            lastLoginDate: true,
+            isAdmin: true,
+            bio: true,
         },
-    }).then((user) => {
-        res.json(user);
-    }).catch((error) => {
-        res.json(error);
     });
+
+    if (!user) return(res.status(404).json({ error: 'User not found' }));
+
+    res.json(user);
 };
-
-const loginUser = async (req: Request, res: Response) => {
-    const { login, password } = req.body;
-
-    if (!login || !password) {
-        return res.status(400).json({ error: 'Missing required fields' });
-    }
-
-    try {
-        const token = await authenticateUser(login, password);
-        res.json({ token });
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
-};
-
-const validateUser = async (req: Request, res: Response) => {
-    const { token } = req.body;
-
-    if (!token) {
-        return res.status(400).json({ error: 'Missing required fields' });
-    }
-
-    try {
-        const userId = await validateToken(token);
-        res.json({ userId });
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
-}
 
 // User resources
 
@@ -197,9 +120,6 @@ const getUserReplies = async (req: Request, res: Response) => {
 }
 
 export {
-    registerUser,
-    loginUser,
-    validateUser,
     getUser,
     getUsers,
     getMe,

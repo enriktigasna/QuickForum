@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { login } from "../controllers/auth.controller";
 
 
-const registerValidation = async (req, res, next) => {
+const registerValidation = async (req: Request, res: Response, next: NextFunction) => {
     if(!req.body.username) {
         res.status(400).json({message: "No username provided"});
         return;
@@ -39,7 +39,7 @@ const registerValidation = async (req, res, next) => {
     next();
 }
 
-const loginValidation = async (req, res, next) => {
+const loginValidation = async (req: Request, res: Response, next: NextFunction) => {
     if(!req.body.login) {
         res.status(400).json({message: "No login provided"});
         return;

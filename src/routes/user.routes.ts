@@ -1,6 +1,7 @@
 import express from 'express';
 import { register, login, refreshAccessToken } from '../controllers/auth.controller';
 import { loginValidation, refreshValidation, registerValidation } from '../validation/auth.validation';
+import { getMe, getUsers } from '../controllers/users.controller';
 
 const router = express.Router();
 
@@ -14,6 +15,9 @@ router.post('/refresh', refreshValidation);
 router.post('/register', register)
 router.post('/login', login)
 router.post('/refresh', refreshAccessToken)
+
+router.get('/me', getMe)
+router.get('/list', getUsers)
 
 /*
 router.get('/', getUsers);

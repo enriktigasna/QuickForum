@@ -160,6 +160,16 @@ const login = async (req: Request, res: Response) => {
     expires: new Date(new Date().getTime() + 2 * 60 * 60 * 1000), // 2 hours
   });
 
+  // Update last login date
+  await prisma.user.update({
+    where: {
+      userId: user[0].userId,
+    },
+    data: {
+      lastLoginDate: new Date(),
+    },
+  });
+
   res.json({
     user: {
       username: user[0].username,
@@ -200,7 +210,7 @@ const refreshAccessToken = async (req: Request, res: Response) => {
   }
   // Cryptographically validate the refresh token
   try {
-    const validRefreshToken = await jwtVerify(
+    await jwtVerify(
       refreshToken,
       new TextEncoder().encode(REFRESH_SECRET)
     );

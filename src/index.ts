@@ -2,12 +2,14 @@ import express, { Request, Response } from 'express';
 import { PrismaClient } from "@prisma/client";
 import users from './routes/user.routes';
 import threads from './routes/threads.routes';
+import verifyToken from './helpers/verifyToken.middleware';
 
 const app = express();
 const port = 3000;
 
 app.use(express.json());
 app.use(require("cookie-parser")());
+app.use(verifyToken);
 
 const prisma = new PrismaClient();
 
