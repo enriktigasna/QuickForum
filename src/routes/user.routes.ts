@@ -1,7 +1,7 @@
 import express from 'express';
 import { register, login, refreshAccessToken } from '../controllers/auth.controller';
 import { loginValidation, refreshValidation, registerValidation } from '../validation/auth.validation';
-import { getMe, getUser, getUserPosts, getUserReplies, getUserThreads, getUsers } from '../controllers/users.controller';
+import { getMe, getUser, getUserPosts, getUserReplies, getUserThreads, getUsers } from '../handlers/users.handler';
 
 const router = express.Router();
 

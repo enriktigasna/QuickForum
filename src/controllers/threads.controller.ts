@@ -232,7 +232,6 @@ const createReply = async (req: Request, res: Response) => {
             replyDate: new Date(),
         }
     });
-    
     res.json(reply);
 }
 
