@@ -5,7 +5,7 @@ import threads from './routes/threads.routes';
 import verifyToken from './helpers/verifyToken.middleware';
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(require("cookie-parser")());

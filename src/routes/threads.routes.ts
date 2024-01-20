@@ -1,5 +1,6 @@
 import express from "express";
-import { getThreads, getThread, getThreadPosts, getThreadPost, getPostReplies, createThread, createPost, createReply } from "../handlers/threads.handler";
+import { getThreads, getThread, getThreadPosts, getThreadPost, getPostReplies, createThread, createPost, createReply, deleteThread, updatePost, updateThread } from "../handlers/threads.handler";
+import { deletePost } from "../handlers/users.handler";
 
 const router = express.Router();
 
@@ -13,10 +14,10 @@ router.post('/', createThread);
 router.post('/:id/posts', createPost);
 router.post('/:id/:postId/replies', createReply);
 
-// router.put('/:id', updateThread);
-// router.put('/:id/posts/:postId', updatePost);
+router.put('/:id', updateThread);
+router.put('/:id/:postId', updatePost);
 
-// router.delete('/:id', deleteThread);
-// router.delete('/:id/posts/:postId', deletePost);
+router.delete('/:id', deleteThread);
+router.delete('/:id/:postId', deletePost);
 
 export default router;

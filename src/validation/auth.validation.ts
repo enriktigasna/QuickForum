@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from "express";
-import { login } from "../controllers/auth.controller";
 
 
 const registerValidation = async (req: Request, res: Response, next: NextFunction) => {

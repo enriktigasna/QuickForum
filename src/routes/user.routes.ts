@@ -17,6 +17,8 @@ router.post('/register', register)
 router.post('/login', login)
 router.post('/refresh', refreshToken)
 
+// router.put('/:id', updateUser)
+
 router.get('/me', getMe)
 
 router.get('/:id/replies', getUserPostReplies);
