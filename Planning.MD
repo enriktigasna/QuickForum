@@ -6,11 +6,15 @@
 
 4. Implement clear code structure with model, controller and validator
 
-TODO: 
-Implement authentication correctly with REFRESH TOKENS
+TODO:
+Implement authentication correctly with REFRESH TOKENS (DONE)
+Implement proper delete
+Pagination for getThreads
+Data type validation (Especially with non-numeric IDs)
+
 
 Long term code quality TODO:
-TODO: Improve error handling on API, don't just return prisma errors, return correct errors
+(DONE) TODO: Improve error handling on API, don't just return prisma errors, return correct errors
 TODO: Add generic errors, while correctly logging them
 
 Way long term:

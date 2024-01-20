@@ -28,8 +28,12 @@ model Thread {
   categoryId     BigInt
   userId         BigInt
   title          String
-  creationDate   DateTime
-  isPinned       Boolean
+  creationDate   DateTime     @default(now())
+  isPinned       Boolean      @default(false)
+  isLocked       Boolean      @default(false)
+  isDeleted      Boolean      @default(false)
+  isEdited       Boolean      @default(false)
+  editDate       DateTime?
   category       Category     @relation(fields: [categoryId], references: [categoryId])
   user           User         @relation(fields: [userId], references: [userId])
   posts          Post[]
@@ -47,7 +51,10 @@ model Post {
   threadId     BigInt
   userId       BigInt
   content      String
-  postDate     DateTime
+  postDate     DateTime @default(now())
+  isDeleted    Boolean  @default(false)
+  isEdited     Boolean  @default(false)
+  editDate     DateTime?
   thread       Thread   @relation(fields: [threadId], references: [threadId])
   user         User     @relation(fields: [userId], references: [userId])
   replies      Reply[]
