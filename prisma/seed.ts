@@ -29,7 +29,6 @@ async function main() {
   const thread1 = await prisma.thread.create({
     data: {
       title: 'Welcome to the Forum',
-      creationDate: new Date(),
       isPinned: true,
       categoryId: category1.categoryId,
       userId: user1.userId,
@@ -40,19 +39,18 @@ async function main() {
   const post1 = await prisma.post.create({
     data: {
       content: 'Hello, everyone! Welcome to the new forum.',
-      postDate: new Date(),
       threadId: thread1.threadId,
       userId: user1.userId,
     },
   });
 
   // Seed Replies
-  await prisma.reply.create({
+  await prisma.post.create({
     data: {
       content: 'Thanks for the welcome!',
-      replyDate: new Date(),
-      postId: post1.postId,
       userId: user1.userId,
+      threadId: thread1.threadId,
+      replyToId: post1.postId,
     },
   });
 

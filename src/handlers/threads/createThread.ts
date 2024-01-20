@@ -31,3 +31,5 @@ const createThread = async (req: Request, res: Response) => {
     });
     res.json(thread);
 }
+
+export default createThread;

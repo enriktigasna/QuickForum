@@ -17,16 +17,14 @@ const getPostReplies = async (req: Request, res: Response) => {
     const post = await prisma.post.findUnique({
         where: {
             postId: postId
+        },
+        include: {
+            replies: true
         }
     })
     if(!post) return res.status(404).json({ error: 'Post not found' });
 
-    const replies = await prisma.reply.findMany({
-        where: {
-            postId: postId
-        }
-    })
-    res.json(replies);
+    res.json(post.replies);
 }
 
 export default getPostReplies;

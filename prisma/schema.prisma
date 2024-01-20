@@ -18,7 +18,6 @@ model User {
   isAdmin          Boolean
   threads          Thread[]
   posts            Post[]
-  replies          Reply[]
   refreshTokens    RefreshToken[]
   blacklistedTokens BlacklistedToken[]
 }
@@ -31,7 +30,6 @@ model Thread {
   creationDate   DateTime     @default(now())
   isPinned       Boolean      @default(false)
   isLocked       Boolean      @default(false)
-  isDeleted      Boolean      @default(false)
   isEdited       Boolean      @default(false)
   editDate       DateTime?
   category       Category     @relation(fields: [categoryId], references: [categoryId])
@@ -47,27 +45,18 @@ model Category {
 }
 
 model Post {
-  postId       BigInt   @id @default(autoincrement())
+  postId       BigInt      @id @default(autoincrement())
   threadId     BigInt
   userId       BigInt
+  replyToId    BigInt?
   content      String
-  postDate     DateTime @default(now())
-  isDeleted    Boolean  @default(false)
-  isEdited     Boolean  @default(false)
+  postDate     DateTime    @default(now())
+  isEdited     Boolean     @default(false)
   editDate     DateTime?
-  thread       Thread   @relation(fields: [threadId], references: [threadId])
-  user         User     @relation(fields: [userId], references: [userId])
-  replies      Reply[]
-}
-
-model Reply {
-  replyId       BigInt   @id @default(autoincrement())
-  postId        BigInt
-  userId        BigInt
-  content       String
-  replyDate     DateTime
-  post          Post     @relation(fields: [postId], references: [postId])
-  user          User     @relation(fields: [userId], references: [userId])
+  thread       Thread      @relation(fields: [threadId], references: [threadId])
+  user         User        @relation(fields: [userId], references: [userId])
+  replyTo      Post?       @relation("PostToPost", fields: [replyToId], references: [postId])
+  replies      Post[]      @relation("PostToPost")
 }
 
 model RefreshToken {

@@ -15,6 +15,7 @@ const createPost = async (req: Request, res: Response) => {
         }
     })
     if(!thread) return res.status(404).json({ error: 'Thread not found' });
+    if(thread.isLocked) return res.status(403).json({ error: 'Thread is locked' });
 
     const post = await prisma.post.create({
         data: {
@@ -26,3 +27,5 @@ const createPost = async (req: Request, res: Response) => {
 
     res.json(post);
 }
+
+export default createPost;

@@ -1,7 +1,7 @@
 import express from 'express';
-import { register, login, refreshAccessToken } from '../controllers/auth.controller';
+import { register, login, refreshToken } from '../handlers/auth.handler';
 import { loginValidation, refreshValidation, registerValidation } from '../validation/auth.validation';
-import { getMe, getUser, getUserPosts, getUserReplies, getUserThreads, getUsers } from '../handlers/users.handler';
+import { getMe, getUser, getUserPosts, getUserPostReplies, getUserThreads, getUsers } from '../handlers/users.handler';
 
 const router = express.Router();
 
@@ -15,11 +15,11 @@ router.post('/refresh', refreshValidation);
 // ROUTES
 router.post('/register', register)
 router.post('/login', login)
-router.post('/refresh', refreshAccessToken)
+router.post('/refresh', refreshToken)
 
 router.get('/me', getMe)
 
-router.get('/:id/replies', getUserReplies);
+router.get('/:id/replies', getUserPostReplies);
 router.get('/:id/posts', getUserPosts);
 router.get('/:id/threads', getUserThreads);
 router.get('/:id', getUser);
