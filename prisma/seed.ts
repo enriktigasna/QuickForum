@@ -5,13 +5,19 @@ const prisma = new PrismaClient();
 
 async function main() {
   // Seed Categories
-  const category1 = await prisma.category.create({
-    data: { categoryName: 'General Discussion', description: 'Talk about anything here' },
-  });
-
-  const category2 = await prisma.category.create({
-    data: { categoryName: 'Tech Talk', description: 'Discuss tech-related topics' },
-  });
+  const categories = [
+    { categoryName: 'Announcements', description: 'Announcements for the forum' },
+    { categoryName: 'Tech Talk', description: 'Discuss tech-related topics' },
+    { categoryName: 'General Discussion', description: 'Discuss anything' },
+    { categoryName: 'Off-Topic', description: 'Discuss anything not related to tech' },
+    { categoryName: 'Introductions', description: 'Introduce yourself to the community' },
+    { categoryName: 'Feedback', description: 'Give feedback on the forum' },
+  ];
+  const createdCategories = await Promise.all(categories.map(async (category) => {
+    return await prisma.category.create({
+      data: category,
+    });
+  }));
 
   // Seed User
   const user1 = await prisma.user.create({
@@ -30,7 +36,7 @@ async function main() {
     data: {
       title: 'Welcome to the Forum',
       isPinned: true,
-      categoryId: category1.categoryId,
+      categoryId: createdCategories[0].categoryId,
       userId: user1.userId,
     },
   });
