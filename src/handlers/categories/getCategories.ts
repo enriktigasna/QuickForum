@@ -9,8 +9,13 @@ const getCategories = async (req: Request, res: Response) => {
             description: true,
             _count: {
                 select: { threads: true }
+            },
+            threads: {
+                orderBy: { creationDate: "desc" },
+                take: 1,
+                include: {user: {select: {username: true}}}
             }
-        },
+        }
     });
 
     res.json(categories);
